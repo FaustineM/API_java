@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+    <!-- The web.xml is mandatory, it provides the configuration for your web application. -->
+
+    <!-- You must declare here every single servlet of your project, and assign it a name... -->
+    <servlet>
+        <servlet-class>fr.ecp.sio.filrougeapi.endpoints.StationServlet</servlet-class>
+        <servlet-name>station</servlet-name>
+    </servlet>
+    <!-- ...then you declare a mapping from a URL (or a pattern ending with *) to the servlet. -->
+    <servlet-mapping>
+        <servlet-name>station</servlet-name>
+        <url-pattern>/stations/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-class>fr.ecp.sio.filrougeapi.endpoints.StationsServlet</servlet-class>
+        <servlet-name>stations</servlet-name>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>stations</servlet-name>
+        <url-pattern>/stations</url-pattern>
+    </servlet-mapping>
+
+    <!-- You can also declare "filters" that will perform checks or modify requests/responses before or after the matching servlet is used. -->
+    <!-- Filters are a good place to bring implement features shared across multiple endpoints. -->
+    <filter>
+        <filter-name>auth</filter-name>
+        <filter-class>fr.ecp.sio.filrougeapi.auth.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>auth</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>
