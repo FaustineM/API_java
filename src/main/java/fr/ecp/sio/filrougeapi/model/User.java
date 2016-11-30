@@ -5,9 +5,25 @@ package fr.ecp.sio.filrougeapi.model;
  */
 public class User {
 
+    private long id;
     private String login;
     private String password;
-    private long token;
+    private String token;
+
+    /*public User(long id, String login, String password, String token) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.token = token;
+    }
+*/
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getLogin() {
         return login;
@@ -25,11 +41,11 @@ public class User {
         this.password = password;
     }
 
-    public long getToken() {
+    public String getToken() {
         return token;
     }
 
-    public void setToken(long token) {
+    public void setToken(String token) {
         this.token = token;
     }
 }

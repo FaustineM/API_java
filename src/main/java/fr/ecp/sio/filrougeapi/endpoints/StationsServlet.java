@@ -1,6 +1,6 @@
 package fr.ecp.sio.filrougeapi.endpoints;
 
-import fr.ecp.sio.filrougeapi.data.DataRepository;
+import fr.ecp.sio.filrougeapi.data.StationRepository;
 import fr.ecp.sio.filrougeapi.data.DataUtils;
 import fr.ecp.sio.filrougeapi.model.Station;
 
@@ -19,7 +19,7 @@ public class StationsServlet extends ApiServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        DataRepository rep = DataUtils.getRepository();
+        StationRepository rep = DataUtils.getStationRepository();
         List<Station> stations = rep.getStations();
 
         sendResponse(stations, resp);

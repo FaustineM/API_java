@@ -10,6 +10,9 @@ import java.io.IOException;
  */
 public class AuthFilter implements Filter {
 
+    private String login;
+    private String password;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // Nothing to do when the filter is initialized (at server's startup or first request).
@@ -32,5 +35,6 @@ public class AuthFilter implements Filter {
 
     @Override
     public void destroy() { }
+
 
 }

@@ -9,19 +9,29 @@ import java.util.List;
  * An interface for a "Repository" component that will expose methods to interact with the data layer of our project.
  * All servlets will get an instance of the Repository (with DataUtils).
  */
-public interface DataRepository {
+public interface StationRepository {
 
     /*
         Get a station by id.
         Returns null if the station is not found.
      */
-    Station getStation(long id) throws IOException;
+    Station getStationByID(long id) throws IOException;
+
+    /*
+    Get a station by name.
+    Returns null if the station is not found.
+    */
+    Station getStationByName(String name) throws IOException;
 
     /*
         Get a list of all stations.
-        TODO: Add optional parameters to filter the list (or create other methods)
      */
-
     List<Station> getStations() throws IOException;
+
+    /*
+    Get a list of all stations.
+    Using perpage parameters to filter the list (pagination).
+    */
+    List<Station> getStationsUsingPag(int limit, int offset) throws IOException;
 
 }

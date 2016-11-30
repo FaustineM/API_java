@@ -39,7 +39,7 @@
     </servlet-mapping>
 
     <servlet>
-        <fausservlet-class>fr.ecp.sio.filrougeapi.endpoints.StationsServletPagination</fausservlet-class>
+        <servlet-class>fr.ecp.sio.filrougeapi.endpoints.StationsServletPagination</servlet-class>
         <servlet-name>stationsUsingPagination</servlet-name>
     </servlet>
     <servlet-mapping>
@@ -47,14 +47,6 @@
         <url-pattern>/stations?LIMIT=*</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-class>fr.ecp.sio.filrougeapi.endpoints.TokenRequestServlet</servlet-class>
-        <servlet-name>TokenRequest</servlet-name>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>TokenRequest</servlet-name>
-        <url-pattern>/TokenRequest/*</url-pattern>
-    </servlet-mapping>
 
     <!-- You can also declare "filters" that will perform checks or modify requests/responses before or after the matching servlet is used. -->
     <!-- Filters are a good place to bring implement features shared across multiple endpoints. -->
