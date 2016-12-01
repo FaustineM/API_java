@@ -33,6 +33,32 @@ public class SQLUserRepository implements UserRepository {
         }
     }
 
+    private String authenticateUser(String login, String password) throws Exception {
+
+        try {
+
+            // Authenticate the user using the credentials provided
+            isValidUser(login, password);
+
+            // Check if the user does not already have a token
+            // TODO : faire une méthode pour cette vérification
+
+            // Issue a token for the user
+            String token = tokenGenerator();
+
+            // Store the generated token along with the user credential
+             updateUser(token, login);
+
+            // Return the token on the response
+            return token;
+
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+
 
     // A private method to create a station object from the current row of a ResultSet.
     private User createUser(ResultSet rs) throws SQLException {
@@ -40,7 +66,8 @@ public class SQLUserRepository implements UserRepository {
         u.setId(rs.getLong("id"));
         u.setLogin("login");
         u.setPassword("password");
-        String newToken = new tokenGenerator();
+        String newToken;
+        newToken = tokenGenerator();
         u.setToken(newToken);
 
         updateUser(u.getToken(), u.getId());
@@ -48,12 +75,6 @@ public class SQLUserRepository implements UserRepository {
         return u;
     }
 
-/*
-    private void authenticate(String login, String password) throws Exception {
-        // Authenticate against a database, LDAP, file or whatever
-        // Throw an Exception if the credentials are invalid
-    }
-*/
     // Issue a token
     // Return the issued token
     protected String tokenGenerator() {
@@ -61,24 +82,24 @@ public class SQLUserRepository implements UserRepository {
     }
 
     // The user is updated : adding the generated token
-    private void updateUser(String token, long id) throws SQLException {
+    private void updateUser(String token, String login) throws SQLException {
         // Open a connection to the database.
         Connection c = openConnection();
         // Prepare a statement, with '?' placeholders.
         // Prepared statements are efficiently cached and allow a safe handling of placeholders.
-        PreparedStatement stmt = c.prepareStatement("UPDATE Users SET token = ? WHERE id = ?");
+        PreparedStatement stmt = c.prepareStatement("UPDATE Users SET token = ? WHERE login LIKE ? ");
 
-        // set the preparedstatement parameters
+        // set the prepared statement parameters
         stmt.setString(1,token);
-        stmt.setLong(2, id);
+        stmt.setString(2, login);
 
         // call executeUpdate to execute our sql update statement
         stmt.executeUpdate();
         stmt.close();
     }
 
-
-    private boolean isValidUser(String login, String password) throws SQLException {
+    // Check if the credential belongs to a valid user iin the database
+    private boolean isValidUser(String login, String password) throws IOException {
         try (
                 // Open a connection to the database.
                 Connection c = openConnection();
@@ -89,6 +110,7 @@ public class SQLUserRepository implements UserRepository {
 
 
             // set the preparedstatement parameters
+
             stmt.setString(1, login);
             stmt.setString(2, password);
 
@@ -103,7 +125,7 @@ public class SQLUserRepository implements UserRepository {
         }
     }
 
-    public static boolean isValidToken(String token) {
+    public boolean isValidToken(String token) throws IOException {
         try (
                 // Open a connection to the database.
                 Connection c = openConnection();
@@ -112,7 +134,7 @@ public class SQLUserRepository implements UserRepository {
                 PreparedStatement stmt = c.prepareStatement("SELECT * FROM users WHERE token = ?");
         ) {
             // Provide values for placeholders (indexes start at 1 is SQL!)
-            stmt.setLong(1, token);
+            stmt.setNString(1, token);
             // The statement is ready, we can execute it and get the result.
             try (ResultSet rs = stmt.executeQuery()) {
                 // ResultSet works like an iterator: we call next() to position to the next line, then read with other methods.
@@ -133,25 +155,23 @@ public class SQLUserRepository implements UserRepository {
                 Connection c = openConnection();
                 // Prepare a statement, with '?' placeholders.
                 // Prepared statements are efficiently cached and allow a safe handling of placeholders.
-                PreparedStatement stmt = c.prepareStatement("SELECT * FROM users WHERE login LIKE ?");
+                PreparedStatement stmt = c.prepareStatement("SELECT * FROM users WHERE login LIKE ? ANS password LIKE ?");
         ) {
             // Provide values for placeholders (indexes start at 1 is SQL!)
             // The '%' enables to select all station with name containing the string sent in the HTTP request.:
             stmt.setNString(1, login);
+            stmt.setNString(2, password);
             // The statement is ready, we can execute it and get the result.
             try (ResultSet rs = stmt.executeQuery()) {
                 // ResultSet works like an iterator: we call next() to position to the next line, then read with other methods.
 
 
-                User u = new createUser(rs);
+                User u = new User();
+                u = createUser(rs);
                 if (!rs.next()) return null;
-
-                /*if (.... != password) return null;*/
 
                 return u;
             }
-
-
 
 
         } catch (SQLException e) {
@@ -160,6 +180,5 @@ public class SQLUserRepository implements UserRepository {
         }
 
     }
-
 
 }

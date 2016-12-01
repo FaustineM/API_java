@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * An interface for a "Repository" component that will expose methods to interact with the data layer of our project.
+ * An interface for a "Station Repository" component that will expose methods to interact with the data layer of our project.
  * All servlets will get an instance of the Repository (with DataUtils).
  */
 public interface StationRepository {

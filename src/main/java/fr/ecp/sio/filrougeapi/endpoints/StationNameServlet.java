@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * A servlet to handle requests for a single station.
+ * A servlet to handle requests for a single station filtering on its name.
  * This servlet receives requests to URLs /stations/name/{name}.
  */
 public class StationNameServlet extends ApiServlet {
@@ -24,7 +24,9 @@ public class StationNameServlet extends ApiServlet {
         try {
             // We get the id of the station from the path of the URL of the request, removing the leading "/".
             name = req.getPathInfo().substring(1);
-        } catch (NumberFormatException ex) {
+
+            //TODO: Define more precisely the exception
+        } catch (Exception ex) {
             // Path is not a valid id, this is a "client" error (4XX code).
             resp.sendError(400, "Invalid station name");
             return;
@@ -34,7 +36,7 @@ public class StationNameServlet extends ApiServlet {
         Station station = rep.getStationByName(name);
 
         if (station == null) {
-            // A station was not found with this id, send a 404 error.
+            // A station was not found with this name, send a 404 error.
             resp.sendError(404, "Station not found");
         }
 

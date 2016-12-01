@@ -23,8 +23,8 @@ public class SQLStationRepository implements StationRepository {
     private static final String PASSWORD = "promo2016";
 
     // Statistics : total number of available bikes and bike stands, calculated while returning the stationd list.
-    private int availableBikesTotal;
-    private int availableBikeStandsTotal;
+    private int availableBikesTotal = 0;
+    private int availableBikeStandsTotal = 0;
 
     private Connection openConnection() throws SQLException {
         try {
@@ -134,12 +134,13 @@ public class SQLStationRepository implements StationRepository {
                 PreparedStatement stmt = c.prepareStatement("SELECT * FROM stations ORDER BY id LIMIT ? OFFSET ?");
 
                 // set the preparedstatement parameters
-                stmt.setInt(1, limit);
+                //TODO: Define how to use this filter in the SQL statement
+                /*
+                stmt.setInt(1, limit)
                 stmt.setInt(2, offset);
-
+                */
                 ResultSet rs = stmt.executeQuery();
-                stmt.close();
-
+        )
          {
             List<Station> list = new ArrayList<>();
             // Iterate over all the lines of the result.
@@ -149,7 +150,7 @@ public class SQLStationRepository implements StationRepository {
 
             return list;
 
-        } ) catch (SQLException e) {
+        }  catch (SQLException e) {
             throw new IOException("Database error", e);
         }
 

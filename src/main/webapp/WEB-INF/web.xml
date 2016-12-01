@@ -39,7 +39,7 @@
     </servlet-mapping>
 
     <servlet>
-        <fausservlet-class>fr.ecp.sio.filrougeapi.endpoints.StationsServletPagination</fausservlet-class>
+        <servlet-class>fr.ecp.sio.filrougeapi.endpoints.StationsServletPagination<servlet-class>
         <servlet-name>stationsUsingPagination</servlet-name>
     </servlet>
     <servlet-mapping>

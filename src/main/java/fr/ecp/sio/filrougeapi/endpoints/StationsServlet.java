@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * A servlet to handle requests for a list of stations.
+ * A servlet to handle requests for a list of stations (with no filter).
  * This servlet receives requests to URLs /stations.
  */
 public class StationsServlet extends ApiServlet {
