@@ -25,8 +25,7 @@ public class StationNameServlet extends ApiServlet {
             // We get the id of the station from the path of the URL of the request, removing the leading "/".
             name = req.getPathInfo().substring(1);
 
-            //TODO: Define more precisely the exception
-        } catch (Exception ex) {
+        } catch (Exception e) {
             // Path is not a valid id, this is a "client" error (4XX code).
             resp.sendError(400, "Invalid station name");
             return;

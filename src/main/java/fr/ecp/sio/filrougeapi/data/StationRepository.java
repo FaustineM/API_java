@@ -1,6 +1,7 @@
 package fr.ecp.sio.filrougeapi.data;
 
 import fr.ecp.sio.filrougeapi.model.Station;
+import fr.ecp.sio.filrougeapi.model.StationsStatistics;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,14 +25,15 @@ public interface StationRepository {
     Station getStationByName(String name) throws IOException;
 
     /*
-        Get a list of all stations.
+        Get a list of all stations and their statistics
      */
-    List<Station> getStations() throws IOException;
+    StationsStatistics getStations() throws IOException;
 
     /*
     Get a list of all stations.
     Using perpage parameters to filter the list (pagination).
     */
-    List<Station> getStationsUsingPag(int limit, int offset) throws IOException;
+    //List<Station> getStationsUsingPag(int limit, int offset) throws IOException;
+    StationsStatistics getStationsUsingPag(int limit, int offset) throws IOException;
 
 }

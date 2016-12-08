@@ -3,11 +3,11 @@ package fr.ecp.sio.filrougeapi.model;
 import java.io.Serializable;
 
 /**
- * Created by Faustine on 30/11/2016.
+ * A POJO to represent a user.
  */
 public class User implements Serializable{
 
-    private String login; // unique, id of the user
+    private String login; // unique login used as the id of the user
     private String password;
     private String token;
 

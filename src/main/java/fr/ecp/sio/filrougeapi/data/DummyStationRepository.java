@@ -2,6 +2,7 @@ package fr.ecp.sio.filrougeapi.data;
 
 import fr.ecp.sio.filrougeapi.model.Location;
 import fr.ecp.sio.filrougeapi.model.Station;
+import fr.ecp.sio.filrougeapi.model.StationsStatistics;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public class DummyStationRepository implements StationRepository {
     }
 
     @Override
-    public List<Station> getStations() throws IOException {
+    public StationsStatistics getStations() throws IOException {
         return null;
     }
 

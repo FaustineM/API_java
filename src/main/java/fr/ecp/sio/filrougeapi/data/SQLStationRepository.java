@@ -2,6 +2,7 @@ package fr.ecp.sio.filrougeapi.data;
 
 import fr.ecp.sio.filrougeapi.model.Location;
 import fr.ecp.sio.filrougeapi.model.Station;
+import fr.ecp.sio.filrougeapi.model.StationsStatistics;
 
 import java.io.IOException;
 import java.sql.*;
@@ -22,9 +23,7 @@ public class SQLStationRepository implements StationRepository {
     private static final String USER = "root";
     private static final String PASSWORD = "promo2016";
 
-    // Statistics : total number of available bikes and bike stands, calculated while returning the stationd list.
-    private int availableBikesTotal = 0;
-    private int availableBikeStandsTotal = 0;
+
 
     private Connection openConnection() throws SQLException {
         try {
@@ -49,6 +48,14 @@ public class SQLStationRepository implements StationRepository {
         s.setName(rs.getString("name"));
         s.setAvailableBikes(rs.getInt("availableBikes"));
         s.setAvailableBikeStands(rs.getInt("availableBikeStands"));
+        return s;
+    }
+
+    private StationsStatistics createStationsStat(int totalAvailableBikes, int totalAvailableBikeStands, List<Station> list) throws SQLException {
+        StationsStatistics s = new StationsStatistics();
+        s.setTotalAvailableBikes(totalAvailableBikes);
+        s.setTotalAvailableBikeStands(totalAvailableBikeStands);
+        s.setStationsList(list);
         return s;
     }
 
@@ -106,7 +113,10 @@ public class SQLStationRepository implements StationRepository {
     }
 
     @Override
-    public List<Station> getStations() throws IOException {
+    public StationsStatistics getStations() throws IOException {
+        // Statistics : total number of available bikes and bike stands, calculated while returning the stationd list.
+        int totalAvailableBikes = 0;
+        int totalAvailableBikeStands = 0;
         try (
             Connection c = openConnection();
             PreparedStatement stmt = c.prepareStatement("SELECT * FROM stations");
@@ -117,10 +127,10 @@ public class SQLStationRepository implements StationRepository {
 
             while (rs.next()) {
                 list.add(createStation(rs));
-                availableBikesTotal += rs.getInt("availableBikes");
-                availableBikeStandsTotal += rs.getInt("availableBikeStands");
+                totalAvailableBikes += rs.getInt("availableBikes");
+                totalAvailableBikeStands += rs.getInt("availableBikeStands");
             }
-            return list;
+            return createStationsStat(totalAvailableBikes, totalAvailableBikeStands, list);
 
         } catch (SQLException e) {
             throw new IOException("Database error", e);
@@ -128,27 +138,30 @@ public class SQLStationRepository implements StationRepository {
     }
 
     @Override
-    public List<Station> getStationsUsingPag(int limit, int offset) throws IOException {
+    public StationsStatistics getStationsUsingPag(int limit, int offset) throws IOException {
+        // Statistics : total number of available bikes and bike stands, calculated while returning the stationd list.
+        int totalAvailableBikes = 0;
+        int totalAvailableBikeStands = 0;
         try (
                 Connection c = openConnection();
                 PreparedStatement stmt = c.prepareStatement("SELECT * FROM stations ORDER BY id LIMIT ? OFFSET ?");
-
-                // set the preparedstatement parameters
-                //TODO: Define how to use this filter in the SQL statement
-                /*
-                stmt.setInt(1, limit)
-                stmt.setInt(2, offset);
-                */
-                ResultSet rs = stmt.executeQuery();
         )
          {
+             // set the preparedstatement parameters
+            stmt.setInt(1, limit);
+            stmt.setInt(2, offset);
+
+            ResultSet rs = stmt.executeQuery();
+
             List<Station> list = new ArrayList<>();
             // Iterate over all the lines of the result.
             while (rs.next()) {
                 list.add(createStation(rs));
+                totalAvailableBikes += rs.getInt("availableBikes");
+                totalAvailableBikeStands += rs.getInt("availableBikeStands");
             }
 
-            return list;
+             return createStationsStat(totalAvailableBikes, totalAvailableBikeStands, list);
 
         }  catch (SQLException e) {
             throw new IOException("Database error", e);

@@ -1,5 +1,8 @@
 package fr.ecp.sio.filrougeapi.auth;
 
+import fr.ecp.sio.filrougeapi.data.DataUtils;
+import fr.ecp.sio.filrougeapi.data.UserRepository;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +27,8 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         // Get the HTTP Authorization header from the request and inspect it.
         String auth = ((HttpServletRequest) servletRequest).getHeader("Authorization");
+        // Extract the token from the HTTP header
+        String tok = ((HttpServletRequest) servletRequest).getHeader("Token");
 
         // Check if the HTTP Authorization header is present
         if (auth == null) {
@@ -33,37 +38,31 @@ public class AuthFilter implements Filter {
         }
 
         /*
+        TOKEN CHECK
         In every request, the client must send its token to the server.
         1. extraction of the token from the incoming request
         2. Looks up the user details to perform authentication and authorization.
             a. If the token is valid, the server accepts the request.
             b. If the token is invalid, the server refuses the request.
          */
-
-        // TODO à vérifier
-        // Extract the token from the HTTP Authorization header
-        String token = auth.substring("Bearer".length()).trim();
-
-            try {
-
-                // Validate the token
-                validateToken(token);
-
-            } catch (Exception e) {
+        String path = ((HttpServletRequest) servletRequest).getRequestURI();
+        if (path.startsWith("/authentication")) {
+            // The token is not check in the process of token request.
+            filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            // Validate the token
+            UserRepository rep = DataUtils.getUserRepository();
+            if (!rep.isValidToken(tok)) {
                 ((HttpServletResponse) servletResponse).sendError(401, "Token not recognized");
                 return;
             }
 
-        filterChain.doFilter(servletRequest, servletResponse);
-}
-
-    private void validateToken(String token) throws Exception {
-        // Check if it was issued by the server and if it's not expired
-        // Throw an Exception if the token is invalid
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
     }
 
-    @Override
-    public void destroy() { }
-
+        @Override
+        public void destroy () {
+        }
 
 }
